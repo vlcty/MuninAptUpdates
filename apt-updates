@@ -1,0 +1,39 @@
+#!/bin/bash
+
+case $1 in
+	config)
+	
+	# Basic graph section
+	echo "graph_title APT Updates"
+	echo "graph_vlabel Amount"
+	echo "graph_category system"
+	echo "graph_scale no"
+	echo "graph_info Shows how many security- and normal updates are available"
+	
+	# Graph security
+	echo "security.label Security updates"
+	echo "security.info Amount of packages which were found in the security resources"
+	echo "security.warning 5"
+	echo "security.critical 10"
+	echo "security.type DERIVE"
+	echo "security.min 0"
+	
+	# Graph normal
+	echo "normal.label Normal updates"
+	echo "normal.info Amount of packages which were found in the other resources"
+	echo "normal.warning 10"
+	echo "normal.critical 20"
+	echo "normal.type DERIVE"
+	echo "normal.min 0"
+	
+	exit 0
+	;;
+esac
+
+#
+## Normal running
+#
+apt-get update >/dev/null 2>&1
+
+echo "security.value `apt-get -s dist-upgrade | grep '^Inst' | grep -i 'securi' | wc -l`"
+echo "normal.value `apt-get -s dist-upgrade | grep '^Inst' | wc -l`"
